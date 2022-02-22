@@ -48,6 +48,9 @@ def parse_args():
 	parser.add_argument('--directed', dest='directed', action='store_true',
 						help='Graph is (un)directed. Default is undirected.')
 	parser.add_argument('--undirected', dest='undirected', action='store_false')
+	parser.add_argument('--checkpoint-path',
+						help='Model checkpoints path.')
+
 	parser.set_defaults(directed=False)
 
 	return parser.parse_args()
@@ -83,7 +86,7 @@ def learn_embeddings(walks):
 	for walk in walks:
 		walks1 += list(map(lambda x: map_dict[str(x)], walk))
 	print(walks1[:100])
-	newsfeature2vec(walks1,args.output,include=args.include,skip_window=args.window_size,iter=int(len(walks1)))
+	newsfeature2vec(walks1,args.output,include=args.include,skip_window=args.window_size,iter=int(len(walks1)), checkpoint_path=args.checkpoint_path)
 	return
 
 def main(args):
