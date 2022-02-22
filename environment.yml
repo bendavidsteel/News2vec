@@ -1,0 +1,13 @@
+name: news2vec
+channels:
+  - conda-forge
+dependencies:
+  - python=3.7
+  - conda-build
+  - conda-pack
+  - tensorflow
+  - networkx
+  - pandas
+  - numpy
+  - six
+
