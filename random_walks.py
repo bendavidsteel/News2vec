@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 import random
+import tqdm
 
 
 class Graph():
@@ -81,7 +82,7 @@ class Graph():
 		is_directed = self.is_directed
 
 		alias_nodes = {}
-		for node in G.nodes():
+		for node in tqdm.tqdm(G.nodes(), total=G.number_of_nodes()):
 			unnormalized_probs = [G[node][nbr]['weight'] for nbr in sorted(G.neighbors(node))]
 			norm_const = sum(unnormalized_probs)
 			normalized_probs =  [float(u_prob)/norm_const for u_prob in unnormalized_probs]
@@ -90,11 +91,12 @@ class Graph():
 		alias_edges = {}
 		triads = {}
 
+		num_edges = G.number_of_edges()
 		if is_directed:
-			for edge in G.edges():
+			for edge in tqdm.tqdm(G.edges(), total=num_edges):
 				alias_edges[edge] = self.get_alias_edge(edge[0], edge[1])
 		else:
-			for edge in G.edges():
+			for edge in tqdm.tqdm(G.edges(), total=num_edges):
 				alias_edges[edge] = self.get_alias_edge(edge[0], edge[1])
 				alias_edges[(edge[1], edge[0])] = self.get_alias_edge(edge[1], edge[0])
 
@@ -117,22 +119,22 @@ def alias_setup(probs):
 	smaller = []
 	larger = []
 	for kk, prob in enumerate(probs):
-	    q[kk] = K*prob
-	    if q[kk] < 1.0:
-	        smaller.append(kk)
-	    else:
-	        larger.append(kk)
+		q[kk] = K*prob
+		if q[kk] < 1.0:
+			smaller.append(kk)
+		else:
+			larger.append(kk)
 
 	while len(smaller) > 0 and len(larger) > 0:
-	    small = smaller.pop()
-	    large = larger.pop()
+		small = smaller.pop()
+		large = larger.pop()
 
-	    J[small] = large
-	    q[large] = q[large] + q[small] - 1.0
-	    if q[large] < 1.0:
-	        smaller.append(large)
-	    else:
-	        larger.append(large)
+		J[small] = large
+		q[large] = q[large] + q[small] - 1.0
+		if q[large] < 1.0:
+			smaller.append(large)
+		else:
+			larger.append(large)
 
 	return J, q
 
@@ -144,6 +146,6 @@ def alias_draw(J, q):
 
 	kk = int(np.floor(np.random.rand()*K))
 	if np.random.rand() < q[kk]:
-	    return kk
+		return kk
 	else:
-	    return J[kk]
+		return J[kk]

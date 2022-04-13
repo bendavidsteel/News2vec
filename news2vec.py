@@ -10,9 +10,9 @@ import collections
 import math
 import random
 import numpy as np
-from six.moves import xrange
 import tensorflow.compat.v1 as tf
 import pandas as pd
+import tqdm
 
 tf.disable_v2_behavior() 
 
@@ -49,7 +49,8 @@ class newsfeature2vec:
                 print("Initialized")
                 average_loss = 0
                 min_loss = None
-                for step in xrange(self.iter):
+                step_iter = tqdm.tqdm(range(self.iter), total=self.iter)
+                for step in step_iter:
                     batch, labels = self.generate_batch()
                     for i in range(self.batch_size):
                         word = self.reverse_dictionary[batch[i]]
@@ -67,7 +68,7 @@ class newsfeature2vec:
 
                         average_loss /= (2000*self.batch_size)
                         # The average loss is an estimate of the loss over the last 2000 batches.
-                        print("Average loss at step ", step, ": ", average_loss)
+                        step_iter.set_description(f"Average loss at step {step}: {average_loss}")
 
                         if min_loss is None:
                             min_loss = average_loss
