@@ -125,7 +125,8 @@ def main(args):
 
 
 	print("Learn embeddings")
-	newsfeature2vec(all_article_walks,args.output,include=args.include,skip_window=args.window_size,iter=int(len(all_article_walks)), checkpoint_path=args.checkpoint_path)
+	newsfeature2vec(all_article_walks,args.output,include=args.include,skip_window=args.window_size,iter=10000, save_path=args.checkpoint_path)
+	#newsfeature2vec(all_article_walks,args.output,include=args.include,skip_window=args.window_size,iter=int(len(all_article_walks)), save_path=args.checkpoint_path)
 
 if __name__ == "__main__":
 	args = parse_args()

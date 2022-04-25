@@ -7,6 +7,7 @@ from __future__ import print_function
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 import collections
+import json
 import math
 import random
 import numpy as np
@@ -18,7 +19,7 @@ tf.disable_v2_behavior()
 
 class newsfeature2vec:
     def __init__(self, walks, out_dir, batch_size=10, embedding_size=128, skip_window=5, num_skips=10, neg_samples=5, include=True, iter=3000000,
-                 checkpoint_path=None):
+                 save_path=None):
         self.iter = iter
         self.data_index = 0
         if not include:
@@ -30,17 +31,21 @@ class newsfeature2vec:
         self.skip_window = skip_window
         self.num_skips = num_skips
         self.neg_samples = neg_samples
-        self.checkpoint_path = checkpoint_path
+        self.save_path = save_path
         
         self.build_dataset()
         self.build_dataset_emb()
+
+        dictionary_path = os.path.join(self.save_path, 'token_dictionary.json')
+        with open(dictionary_path, 'w') as f:
+            json.dump(self.dictionary_emb, f)
 
         graph = tf.Graph()
         with graph.as_default():
             self.build_model()
 
-            checkpoint_prefix = os.path.join(self.checkpoint_path, "ckpt")
-            last_checkpoint = tf.train.latest_checkpoint(self.checkpoint_path)
+            checkpoint_prefix = os.path.join(self.save_path, "ckpt")
+            last_checkpoint = tf.train.latest_checkpoint(self.save_path)
             status = self.checkpoint.restore(last_checkpoint)
 
             with tf.Session() as session:
