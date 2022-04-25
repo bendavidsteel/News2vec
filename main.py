@@ -35,6 +35,9 @@ def parse_args():
 	parser.add_argument('--window-size', type=int, default=5,
 						help='Context size for optimization. Default is 5.')
 
+	parser.add_argument('--num-iterations', type=int, default=None,
+						help='Number of iterations to train for. Default is proportional to dataset size.')
+
 	parser.add_argument('--p', type=float, default=1,
 						help='Return hyperparameter. Default is 1.')
 
@@ -124,9 +127,9 @@ def main(args):
 			pickle.dump(all_article_walks, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+	num_iters = int(len(all_article_walks)) if args.num_iterations is None else args.num_iterations
 	print("Learn embeddings")
-	newsfeature2vec(all_article_walks,args.output,include=args.include,skip_window=args.window_size,iter=10000, save_path=args.checkpoint_path)
-	#newsfeature2vec(all_article_walks,args.output,include=args.include,skip_window=args.window_size,iter=int(len(all_article_walks)), save_path=args.checkpoint_path)
+	newsfeature2vec(all_article_walks,args.output,include=args.include,skip_window=args.window_size,iter=num_iters, save_path=args.checkpoint_path)
 
 if __name__ == "__main__":
 	args = parse_args()
