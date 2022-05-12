@@ -5,10 +5,13 @@ dependencies:
   - python=3.7
   - conda-build
   - conda-pack
-  - tensorflow
   - networkx
   - pandas
   - numpy
   - six
   - numba
+  - pip
+  - pip:
+    - tensorflow
+   
 
