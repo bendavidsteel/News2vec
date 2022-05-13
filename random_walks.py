@@ -71,7 +71,7 @@ class Graph():
 		q = self.q
 
 		unnormalized_probs = []
-		dst_neighbours = np.sort(np.array(G.neighbors(dst)))
+		dst_neighbours = np.sort(np.fromiter(G.neighbors(dst), dtype=int))
 		for dst_nbr in dst_neighbours:
 			if dst_nbr == src:
 				unnormalized_probs.append(G[dst][dst_nbr]['weight']/p)
@@ -93,7 +93,7 @@ class Graph():
 
 		alias_nodes = {}
 		for node in tqdm.tqdm(G.nodes(), total=G.number_of_nodes()):
-			neighbours = np.sort(np.array(G.neighbors(node)))
+			neighbours = np.sort(np.fromiter(G.neighbors(node), dtype=int))
 			unnormalized_probs = np.array([G[node][nbr]['weight'] for nbr in neighbours]).astype(float)
 			normalized_probs = unnormalized_probs / np.sum(unnormalized_probs)
 			alias_nodes[node] = alias_setup(normalized_probs)
