@@ -32,7 +32,7 @@ class Graph():
 
 		while len(walk) < walk_length:
 			cur = walk[-1]
-			cur_nbrs = np.sort(np.array(G.neighbors(cur)))
+			cur_nbrs = np.sort(np.fromiter(G.neighbors(cur), dtype=int))
 			if len(cur_nbrs) > 0:
 				if len(walk) == 1:
 					walk.append(cur_nbrs[alias_draw(alias_nodes[cur][0], alias_nodes[cur][1])])

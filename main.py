@@ -118,7 +118,7 @@ def main(args):
 			walks = G.simulate_walks(args.num_walks, args.walk_length)
 			
 			print("Map news")
-			map_filepath = edge_filepath.replace(".edgelist", "_nodes.map")
+			map_filepath = edge_filepath.replace("s.edgelist", "_nodes.map")
 			article_walks = map_news(walks, map_filepath)
 
 			all_article_walks += article_walks
