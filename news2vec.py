@@ -36,17 +36,10 @@ class newsfeature2vec:
         self.build_dataset()
         self.build_dataset_emb()
 
-        dictionary_path = os.path.join(self.save_path, 'token_dictionary.json')
-        with open(dictionary_path, 'w') as f:
-            json.dump(self.dictionary_emb, f)
-
         graph = tf.Graph()
         with graph.as_default():
             self.build_model()
-
-            checkpoint_prefix = os.path.join(self.save_path, "ckpt")
-            last_checkpoint = tf.train.latest_checkpoint(self.save_path)
-            status = self.checkpoint.restore(last_checkpoint)
+            status = self.checkpoint.restore(self.checkpoint_manager.latest_checkpoint)
 
             with tf.Session() as session:
                 status.initialize_or_restore(session)
@@ -79,7 +72,7 @@ class newsfeature2vec:
                             min_loss = average_loss
                         if average_loss < min_loss:
                             min_loss = average_loss
-                            self.checkpoint.save(file_prefix=checkpoint_prefix)
+                            self.checkpoint_manager.save()
                             
                         average_loss = 0
 
@@ -173,3 +166,5 @@ class newsfeature2vec:
         self.normalized_embeddings = self.embeddings / norm
 
         self.checkpoint = tf.train.Checkpoint(embeddings=self.embeddings, nce_weights=nce_weights, nce_biases=nce_biases, global_step=self.global_step)
+        self.checkpoint_manager = tf.train.CheckpointManager(self.checkpoint, self.save_path, max_to_keep=1)
+
